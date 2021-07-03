@@ -1,4 +1,4 @@
-var player = document.querySelectorAll('.mv-container'),
+const player = document.querySelectorAll('.mv-container'),
     gameContainer = document.querySelector(".main-container"),
     winingContainer = document.querySelector('.wining-container'),
     pl1Win = document.querySelector('.pl1-win'),
@@ -166,42 +166,51 @@ console.log('i work') //}
        // reset()
        // console.log('i work too')});
 
+function click(ply, arr, event) {
+    let field =  event.target.querySelector("div")
+    let currentConatainer = Number(event.target.dataset.mv);
+    console.log(event);
+    field.classList.add(ply)
+    arr.push(currentConatainer)
+    moves++;
+    checked(arr)
+}
 
-
-
-  for (let i = 0; i < player.length; i++) {
-        player[i].addEventListener("click", function (event) {
-       let playerOne = event.target.querySelector('.playerO');
-       let playerTwo = event.target.querySelector('.player1');
-       let currentConatainer = Number(event.target.dataset.mv);
-
-    if (state == 0 && won == false && drawn == false ) {
-           playerOne.style.display = 'block';
-           state = 1;
-           moves++;
-           pl1.push(currentConatainer)
-           checked(pl1)
-           
-       }else if (state == 1 && won == false && drawn == false){
-           playerTwo.style.display = 'block'
-           state = 0
-           moves++
-           pl2.push(currentConatainer)
-           checked(pl2)
-    } else {
-        
-        if (moves >= 9) { 
-            reset()
-            
-        }else if (pl1w == true || pl2w == true) {
-            reset()
-            console.log('No draw')
+player.forEach(e => {
+    e.addEventListener('click', (e) => {
+        if (state == 0 && won == false && drawn == false ) {
+            state = 1
+            click('playerO', pl1, e)
+        }else if (state == 1 && won == false && drawn == false){
+            state = 0
+            click('player1', pl2, e)
+      }
         }
+    )
+})
+
+
+//   for (let i = 0; i < player.length; i++) {
+    
+
+//     if (state == 0 && won == false && drawn == false ) {
+//           click('player1', pl1)
+//        }else if (state == 1 && won == false && drawn == false){
+        
+//     } else {
+        
+//         if (moves >= 9) { 
+//             reset()
+            
+//         }else if (pl1w == true || pl2w == true) {
+//             reset()
+//             console.log('No draw')
+//         }
         
         
            
-       }
-    })
+//        }
+//     })
         
-} 
+// } 
    

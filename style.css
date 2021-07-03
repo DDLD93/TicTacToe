@@ -149,7 +149,7 @@ h2 {
     width: 65px;
     left: 6px;
     top: 9px;
-    display: none;
+    display: block;
     
 
 }
@@ -165,7 +165,7 @@ h2 {
     left: 0;
     right: 0;
     margin: auto;
-    display: none;
+    display: block;
 }
 
 
