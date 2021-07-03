@@ -5,8 +5,13 @@ const player = document.querySelectorAll('.mv-container'),
     plOWin = document.querySelector('.plO-win'),
     noWinner = document.getElementById('draw'),
     winnerText = document.getElementById('winner');
-    
 
+    var socket = io.connect('https://localhost:4200');
+    socket.on('connect', function(data) {
+       socket.emit('join', 'Hello World from client');
+    });    
+    
+console.log(socket);
 // Array to keep track of players moves
 let pl1 = [];
 let pl2 = [];
