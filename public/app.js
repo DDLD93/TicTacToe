@@ -8,59 +8,66 @@ const player = document.querySelectorAll('.mv-container'),
 
     var socket = io.connect('http://localhost:4200');
     socket.on('connect', function(data) {
-       socket.on('player1Res', (e) => {
+       socket.on('playerORes', (e) => {
            let snum = e
         player.forEach(e => {
-            let num = Number(e.dataset.mv);
+        var num = Number(e.dataset.mv);
+
             if(num == snum) {
-                let field =  e.querySelector("div")
-                field.classList.add('player1')
+                click('playerO', pl1, e, num)
             }
         })
-           
-       })
+    })
 
-       socket.on('playerORes', (e) => {
+       socket.on('player1Res', (e) => {
         let snum = e
      player.forEach(e => {
-         let num = Number(e.dataset.mv);
+        var num = Number(e.dataset.mv);
+
          if(num == snum) {
-             let field =  e.querySelector("div")
-             field.classList.add('playerO')
+            click('player1', pl2, e, num)
          }
      })
-        
     })
-    });
+    socket.on('resetRes', () => {
+        reset()
+    })
+});
 
-    function click(ply, arr, event) {
-    let field =  event.target.querySelector("div")
-    let currentConatainer = Number(event.target.dataset.mv);
-    //console.log(event);
-    field.classList.add(ply)
-    arr.push(currentConatainer)
-    moves++;
-    
-    checked(arr)
+    function click(ply, arr, event, cnum) {
+        let field =  event.querySelector("div");
+        field.classList.add(ply)
+        arr.push(cnum)
+        moves++;
+        state = !state
+        checked(arr)
 }
 
 player.forEach(e => {
     let currentConatainer = Number(e.dataset.mv);
     e.addEventListener('click', (e) => {
-        if (state == 0 && won == false && drawn == false ) {
-            state = 1
+        if (state == true && won == false && drawn == false ) {
+            
             socket.emit('playerO', currentConatainer);
-            click('playerO', pl1, e)
-        }else if (state == 1 && won == false && drawn == false){
-            state = 0
+            //click('playerO', pl1, e)
+        }else if (state == false && won == false && drawn == false){
+            
             socket.emit('player1', currentConatainer);
-            click('player1', pl2, e)
-      }
-        }
+           // click('player1', pl2, e)
+      } else {
+        
+               if (moves >= 9) { 
+                  reset()
+                    
+             }else if (pl1w == true || pl2w == true) {
+                   reset()
+                  console.log('No draw')
+               }
+        }}
     )
 })
 
-console.log(socket);
+
 // Array to keep track of players moves
 let pl1 = [];
 let pl2 = [];
@@ -68,7 +75,7 @@ var won = false;
 let pl1w = false;
 let pl2w = false;
 // set who's turn to make the next move
-var state = 0
+var state = true
 // total number of moves in each game session cannot exceed 9
 var moves = 0
 var drawn = false;
@@ -148,7 +155,9 @@ function reset() {
     var cons = document.querySelectorAll('.player1, .playerO')
     for (let i = 0; i < cons.length; i++) {
         const con = cons[i];
-        con.style.display = 'none'
+        con.classList.remove('player1', 'playerO')
+       socket.emit('reset',)
+
     }
     pl1w = false;
     pl2w = false;
