@@ -6,11 +6,60 @@ const player = document.querySelectorAll('.mv-container'),
     noWinner = document.getElementById('draw'),
     winnerText = document.getElementById('winner');
 
-    var socket = io.connect('https://localhost:4200');
+    var socket = io.connect('http://localhost:4200');
     socket.on('connect', function(data) {
-       socket.emit('join', 'Hello World from client');
-    });    
+       socket.on('player1Res', (e) => {
+           let snum = e
+        player.forEach(e => {
+            let num = Number(e.dataset.mv);
+            if(num == snum) {
+                let field =  e.querySelector("div")
+                field.classList.add('player1')
+            }
+        })
+           
+       })
+
+       socket.on('playerORes', (e) => {
+        let snum = e
+     player.forEach(e => {
+         let num = Number(e.dataset.mv);
+         if(num == snum) {
+             let field =  e.querySelector("div")
+             field.classList.add('playerO')
+         }
+     })
+        
+    })
+    });
+
+    function click(ply, arr, event) {
+    let field =  event.target.querySelector("div")
+    let currentConatainer = Number(event.target.dataset.mv);
+    //console.log(event);
+    field.classList.add(ply)
+    arr.push(currentConatainer)
+    moves++;
     
+    checked(arr)
+}
+
+player.forEach(e => {
+    let currentConatainer = Number(e.dataset.mv);
+    e.addEventListener('click', (e) => {
+        if (state == 0 && won == false && drawn == false ) {
+            state = 1
+            socket.emit('playerO', currentConatainer);
+            click('playerO', pl1, e)
+        }else if (state == 1 && won == false && drawn == false){
+            state = 0
+            socket.emit('player1', currentConatainer);
+            click('player1', pl2, e)
+      }
+        }
+    )
+})
+
 console.log(socket);
 // Array to keep track of players moves
 let pl1 = [];
@@ -171,28 +220,6 @@ console.log('i work') //}
        // reset()
        // console.log('i work too')});
 
-function click(ply, arr, event) {
-    let field =  event.target.querySelector("div")
-    let currentConatainer = Number(event.target.dataset.mv);
-    console.log(event);
-    field.classList.add(ply)
-    arr.push(currentConatainer)
-    moves++;
-    checked(arr)
-}
-
-player.forEach(e => {
-    e.addEventListener('click', (e) => {
-        if (state == 0 && won == false && drawn == false ) {
-            state = 1
-            click('playerO', pl1, e)
-        }else if (state == 1 && won == false && drawn == false){
-            state = 0
-            click('player1', pl2, e)
-      }
-        }
-    )
-})
 
 
 //   for (let i = 0; i < player.length; i++) {
